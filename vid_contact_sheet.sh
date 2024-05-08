@@ -49,24 +49,6 @@ montage -label '%f' @$video_dir/thumb_list.txt -geometry 200x150 -label '%f' -ti
 # Remove that no-longer-needed list
 rm $video_dir/thumb_list.txt
 
-# # Create contact sheets
-# montage @thumb_list -geometry 200x150 -tile 8x$nrow $video_dir/contact_sheet.png
-
-# 
-# thumbs=("$video_dir"/*-thumb.png)
-# num_thumbs=${#thumbs[@]}
-# num_pdfs=$(( (num_thumbs + 39) / 40 ))
-# 
-# for ((i=0; i<num_pdfs; i++)); do
-# 	pdf="$directory/contact_sheet_$i.pdf"
-# 	start=$((i * 40))
-# 	end=$((start + 39))
-# 	montage "${thumbs[@]:$start:40}" -label '%f' -tile 5x8 -geometry +5+5 "$pdf"
-# done
-
-# Delete thumbnails
-thumb_list=`find "$video_dir" -type f \( -iname "*-thumb.png" \)`
-
 for delete_me in $thumb_list
 do
 	rm $delete_me
