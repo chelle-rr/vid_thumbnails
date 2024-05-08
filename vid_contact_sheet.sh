@@ -44,7 +44,7 @@ then
 fi
 
 # Create contact sheets
-montage -label '%f' @$video_dir/thumb_list.txt -geometry 200x150 -label '%f' -tile 8x$num_rows $video_dir/contact_sheet.png
+montage -label '%f' @$video_dir/thumb_list.txt -geometry 200x150 -label '%f' -tile 8x$num_rows $video_dir/thumbnails.png
 
 # Remove that no-longer-needed list
 rm $video_dir/thumb_list.txt
