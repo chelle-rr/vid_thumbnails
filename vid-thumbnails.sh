@@ -53,13 +53,15 @@ done
 
 # Find all the thumbnails in the directory
 find "$video_dir" -type f -iname *-th.png > $video_dir/thumb_list.txt
-# read num_imgs <<< $(sed -n '$=' thumb_list.txt)
-# let num_rows=num_imgs/6
-# let lefto=num_imgs%6
-# if [ $lefto -gt 0 ]
-# then
-#    let num_rows=num_rows+1
-# fi
+
+# Determine number of columns for imagemagick
+read num_imgs <<< $(sed -n '$=' $video_dir/thumb_list.txt)
+if [[ $num_imgs -gt 5 ]]
+then
+   let num_columns=6
+else
+	let num_columns=num_imgs	   
+fi
 
 # Label the pngs so that the final contact sheet doesn't contain "-th.png" not working though
 # thumb_labels=`find "$video_dir" -type f -iname *-th.png`
