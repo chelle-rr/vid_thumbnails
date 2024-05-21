@@ -18,7 +18,7 @@ if [[ -n ${whitespace[@]} ]]; then
 fi
 
 # Find all video files recursively in the directory and put them in an array
-video_list=`find "$video_dir" -type f \( -iname "*.mp4" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.mov" \)`
+video_list=`find "$video_dir" -type f \( -iname "*.mp4" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.mov" -o -iname "*.mts" \)`
 
 # If no video files found, exit and alert
 if [[ -z ${video_list[@]} ]]; then
@@ -26,7 +26,7 @@ if [[ -z ${video_list[@]} ]]; then
     exit 1
 fi
 
-# For each item in the video_list, create a thumbnail
+# For each item in the video_list, create a thumbnail. Note: if the video is less than 00:00:02, no thumbnail will be generated
 for video_file in $video_list
 do
     # Get the directory of the video file
@@ -54,6 +54,15 @@ done
 # Find all the thumbnails in the directory
 find "$video_dir" -type f -iname *-th.png > $video_dir/thumb_list.txt
 
+# [removed bc unnecessary] Determine number of rows for imagemagick
+# read num_imgs <<< $(sed -n '$=' thumb_list.txt)
+# let num_rows=num_imgs/6
+# let lefto=num_imgs%6
+# if [ $lefto -gt 0 ]
+# then
+#    let num_rows=num_rows+1
+# fi
+
 # Determine number of columns for imagemagick
 read num_imgs <<< $(sed -n '$=' $video_dir/thumb_list.txt)
 if [[ $num_imgs -gt 5 ]]
@@ -76,27 +85,24 @@ fi
 # 	
 # done > $video_dir/thumb_labels.txt
 
+# Name the output thumbnails
+# read thumb_filename <<< $(sed -n 's/[A][0-9]\{5\}//' $video_dir)
+
 # Create contact sheets
-montage -label '%t' @$video_dir/thumb_list.txt -geometry 280x190 -frame 5 -tile 6x $video_dir/thumbnails.png
+montage -label '%t' @$video_dir/thumb_list.txt -geometry 280x190 -tile "$num_columns"x $video_dir/_thumbnails.png
 
 # Not working version of the montage that should change labels ...
 #montage -label @$video_dir/thumb_labels.txt @$video_dir/thumb_list.txt -geometry 200x150 -frame 5 -tile 6x$num_rows $video_dir/thumbnails.png
 
+# Check if thumbnails.png was successfully created
+if test -f $video_dir/_thumbnails.png; then
+	echo "_thumbnails.png successfully created"
+else
+	echo "Error in creating _thumbnails.png"
+fi
+
 # Remove that no-longer-needed list
 rm $video_dir/thumb_list.txt
-
-
-# 
-# thumbs=("$video_dir"/*-th.png)
-# num_thumbs=${#thumbs[@]}
-# num_pdfs=$(( (num_thumbs + 39) / 40 ))
-# 
-# for ((i=0; i<num_pdfs; i++)); do
-# 	pdf="$directory/contact_sheet_$i.pdf"
-# 	start=$((i * 40))
-# 	end=$((start + 39))
-# 	montage "${thumbs[@]:$start:40}" -label '%f' -tile 5x8 -geometry +5+5 "$pdf"
-# done
 
 # Delete thumbnails
 thumb_list=`find "$video_dir" -type f \( -iname "*-th.png" \)`
@@ -105,10 +111,3 @@ for delete_me in $thumb_list
 do
 	rm $delete_me
 done
-
-# Check if thumbnails.png was successfully created
-if test -f $video_dir/thumbnails.png; then
-	echo "Thumbnails.png successfully created"
-else
-	echo "Error in creating thumbnails.png"
-fi
