@@ -5,20 +5,15 @@
 # Directory containing the video files
 read -p "Enter the directory: " video_dir
 
-# Remove whitespace
-# while read line 
-# 	do mv "$line" "${line// /}" 
-# done < <(find $video_dir -iname "* *")
-
 # Check for whitespace; if found, exit and alert
-whitespace=`find "$video_dir" -name "* *"`
+whitespace=`find "$video_dir" -name "* *" -a -not -iname ".*"`
 if [[ -n ${whitespace[@]} ]]; then
 	echo -ne "Whitespace found in file or directory name. Please fix before proceeding:\n$whitespace"
 	exit 1
 fi
 
 # Find all video files recursively in the directory and put them in an array
-video_list=`find "$video_dir" -type f \( -iname "*.mp4" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.mov" -o -iname "*.mts" \)`
+video_list=`find "$video_dir" -type f \( \( -iname "*.mp4" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.mov" -o -iname "*.mts" \) -a -not -iname ".*" \)`
 
 # If no video files found, exit and alert
 if [[ -z ${video_list[@]} ]]; then
