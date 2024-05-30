@@ -84,16 +84,13 @@ fi
 # read thumb_filename <<< $(sed -n 's/[A][0-9]\{5\}//' $video_dir)
 
 # Create contact sheets
-montage -label '%t' @$video_dir/thumb_list.txt -geometry 280x190 -tile "$num_columns"x $video_dir/_thumbnails.png
-
-# Not working version of the montage that should change labels ...
-#montage -label @$video_dir/thumb_labels.txt @$video_dir/thumb_list.txt -geometry 200x150 -frame 5 -tile 6x$num_rows $video_dir/thumbnails.png
+montage -label '%t' @$video_dir/thumb_list.txt -geometry 280x190 -tile "$num_columns"x $video_dir/_vid-thumbnails.png
 
 # Check if thumbnails.png was successfully created
-if test -f $video_dir/_thumbnails.png; then
-	echo "_thumbnails.png successfully created"
+if test -f $video_dir/_vid-thumbnails.png; then
+	echo "_vid-thumbnails.png successfully created"
 else
-	echo "Error in creating _thumbnails.png"
+	echo "Error in creating _vid-thumbnails.png"
 fi
 
 # Remove that no-longer-needed list
