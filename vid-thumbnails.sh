@@ -78,7 +78,7 @@ done
 montage "$thumbnails_dir/__${filenameinfo}-vid-thumbnails-"*.png -tile 1x -geometry +0+0 "$video_dir/__${filenameinfo}_vid-thumbnails.pdf"
 
 # Check if PDF was successfully created
-if test -f "$video_dir/__${filenameinfo}_vid-thumbnails.pdf"; then
+if test -f "$thumbnails_dir/__${filenameinfo}_vid-thumbnails.pdf"; then
     echo "__${filenameinfo}_vid-thumbnails.pdf successfully created"
 else
     echo "Error creating __${filenameinfo}_vid-thumbnails.pdf"
