@@ -12,6 +12,9 @@ if [[ -n ${whitespace[@]} ]]; then
 	exit 1
 fi
 
+# Ask the user to add info to the filename
+read -p "Do you want to add info to the filename? (If not, hit enter): " filenameinfo
+
 # Find all video files recursively in the directory and put them in an array
 video_list=`find "$video_dir" -type f \( \( -iname "*.mp4" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.mov" -o -iname "*.mts" \) -a -not -iname ".*" \)`
 
