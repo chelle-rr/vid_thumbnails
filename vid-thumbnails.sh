@@ -56,6 +56,14 @@ done
 # Find all the thumbnails in the directory
 find "$thumbnails_dir" -type f -iname *-th.png > $thumbnails_dir/thumb_list.txt
 
+# Enclose each line in thumb_list.txt with quotes (necessary for imagemagick to correctly deal with Chinese characters)
+while IFS= read -r line; do
+    echo "\"$line\""
+done < "$thumbnails_dir/thumb_list.txt" > "$thumbnails_dir/thumb_list_quotes.txt"
+
+# Replace the thumb_list with modified thumb_list_quotes.txt
+mv "$thumbnails_dir/thumb_list_quotes.txt" "$thumbnails_dir/thumb_list.txt"
+
 # Split thumbnails into groups of 120 (to try to improve montage creation time for large directories? 🤞)
 gsplit -l 120 -a 3 --additional-suffix=.txt $thumbnails_dir/thumb_list.txt $thumbnails_dir/thumb_list_
 
