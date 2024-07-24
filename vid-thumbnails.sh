@@ -16,7 +16,7 @@ fi
 read -p "Do you want to add info to the filename? (If not, hit enter): " filenameinfo
 
 # Find all video files recursively in the directory and put them in an array
-video_list=`find "$video_dir" -type f \( \( -iname "*.mp4" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.mov" -o -iname "*.mts" \) -a -not -iname ".*" \)`
+video_list=`find "$video_dir" -type f \( \( -iname "*.mp4" -o -iname "*.avi" -o -iname "*.mkv" -o -iname "*.mov" -o -iname "*.mts" -o -iname "*.mxf" \) -a -not -iname ".*" \)`
 
 # If no video files found, exit and alert
 if [[ -z ${video_list[@]} ]]; then
@@ -42,7 +42,7 @@ do
     thumbnail_filename="$thumbnails_dir/$filename_no_ext-th.png"
 
     # Extract thumbnail with ffmpeg; only reviews first two seconds of file, scales the thumbnail to a max width of 280px
-    ffmpeg -ss 00:00:02 -i "$video_file" -hide_banner -loglevel fatal -frames:v 1 -filter:v scale="280:-1" "$thumbnail_filename"
+    ffmpeg -ss 00:00:02 -n -i "$video_file" -hide_banner -loglevel fatal -frames:v 1 -filter:v scale="280:-1" "$thumbnail_filename"
     
 
     # Check if extraction was successful
@@ -56,12 +56,12 @@ done
 # Find all the thumbnails in the directory
 find "$thumbnails_dir" -type f -iname *-th.png > $thumbnails_dir/thumb_list.txt
 
-# Enclose each line in thumb_list.txt with quotes (necessary for imagemagick to correctly deal with Chinese characters)
+# Enclose each line in thumb_list.txt with quotes
 while IFS= read -r line; do
     echo "\"$line\""
 done < "$thumbnails_dir/thumb_list.txt" > "$thumbnails_dir/thumb_list_quotes.txt"
 
-# Replace the thumb_list with modified thumb_list_quotes.txt
+# Use the modified thumb_list_quotes.txt for further processing
 mv "$thumbnails_dir/thumb_list_quotes.txt" "$thumbnails_dir/thumb_list.txt"
 
 # Split thumbnails into groups of 120 (to try to improve montage creation time for large directories? 🤞)
